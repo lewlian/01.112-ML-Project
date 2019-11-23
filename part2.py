@@ -112,4 +112,4 @@ if __name__ == "__main__":
     filePath = sys.argv[1]
     e, t = emmissionWithSmoothing(
         open(filePath+"/train", "r", encoding="utf8"), 3)
-    predictLabel(e, t, filePath+"/dev.in", filePath+"/dev.prediction.out")
+    predictLabel(e, t, filePath+"/dev.in", filePath+"/dev.p2.out")

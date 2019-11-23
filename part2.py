@@ -26,15 +26,15 @@ def emmission(file):
             #   dictionary of the count of each unique tag (O, B-positive, I-positive, etc.)
             tagCount[tag] += 1
 
-    mle = {}
+    e = {}
     for tag in tagCount:
         #   Create a dictionary for each tag which is y-values
-        mle[tag] = {}
+        e[tag] = {}
         #   list(tagToWordDictionary[tag]) returns us ALL the words (all x-values)
         for currentWord in list(tagToWordDictionary[tag]):
-            mle[tag][currentWord] = float(
+            e[tag][currentWord] = float(
                 tagToWordDictionary[tag][currentWord]) / (tagCount[tag])
-    return mle
+    return e
 
 
 #   emission with smoothing function
@@ -70,44 +70,46 @@ def emmissionWithSmoothing(file, k):
                     tagToWordDictionary[tag]['#UNK#'] += tagToWordDictionary[tag][word]
                     del tagToWordDictionary[tag][word]
 
-    mle = defaultdict(lambda: defaultdict(float))
+    e = defaultdict(lambda: defaultdict(float))
 
     for tag in tagCount:
         # list(tagToWordDictionary[tag]) returns us ALL the words (all x-values)
         print(tagToWordDictionary[tag]["#UNK#"])
+        print(tag, tagCount[tag])
+        print(tagToWordDictionary[tag]["#UNK#"]/tagCount[tag])
         for word in list(tagToWordDictionary[tag]):
-            mle[tag][word] = float(
+            e[tag][word] = float(
                 tagToWordDictionary[tag][word]) / (tagCount[tag])
     # for tag in tagCount:
-    #     print(tag, mle[tag]["#UNK#"])
-    return mle, tagCount
+    #     print(tag, e[tag]["#UNK#"])
+    return e, tagCount
 
 
-def predictLabel(mle, tags, inputFile, outputFile):
+def predictLabel(e, tags, inputFile, outputFile):
     f = open(outputFile, 'w+', encoding="utf8")
     for line in open(inputFile, 'r', encoding="utf8"):
         if (line.rstrip() != ""):
             word = line.rstrip()
-            mleForWord = []
+            eForWord = []
             for tag in tags:
-                mleForWord.append((getLikelihood(mle, word, tag), tag))
-            f.write(word+" "+max(mleForWord)[1]+"\n")
-            #print(word, max(mleForWord)[1])
+                eForWord.append((getLikelihood(e, word, tag), tag))
+            f.write(word+" "+max(eForWord)[1]+"\n")
+            #print(word, max(eForWord)[1])
         else:
             f.write('\n')
     f.close()
     print('Finished writing to File.')
 
 
-def getLikelihood(mle, word, tag):
-    if word in mle[tag]:
-        return mle[tag][word]
+def getLikelihood(e, word, tag):
+    if word in e[tag]:
+        return e[tag][word]
     else:
-        return mle[tag]["#UNK#"]
+        return e[tag]["#UNK#"]
 
 
 if __name__ == "__main__":
     filePath = sys.argv[1]
-    mle, t = emmissionWithSmoothing(
+    e, t = emmissionWithSmoothing(
         open(filePath+"/train", "r", encoding="utf8"), 3)
-    predictLabel(mle, t, filePath+"/dev.in", filePath+"/dev.prediction.out")
+    predictLabel(e, t, filePath+"/dev.in", filePath+"/dev.prediction.out")

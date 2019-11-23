@@ -43,9 +43,12 @@ def viterbi(file, em_params, tr_params, tags):
                         for u in range(len(tags)):
                             try:
                                 pi = T[k-1][u]
-                                a = tr_params[tags[v]][tags[u]]
-                                b = em_params[tags[v]][word[0]]
-                                value = pi*a*b
+                                if(tr_params[tags[v]] != 0):
+                                    a = tr_params[tags[v]][tags[u]]
+                                    b = em_params[tags[v]][word[0]]
+                                    value = pi*a*b
+                                else: 
+                                    value = 0
                             except KeyError:
                                 value = 0
                             # value = T[k-1][u]*tr_params[v][u]*em_params[v][word[0]]
@@ -77,7 +80,10 @@ def viterbi(file, em_params, tr_params, tags):
         for u in range(len(tags)-1):
             pi = T[m][u]
             try:
-                a = tr_params[prev_tag][tags[u]]
+                if(tr_params[prev_tag]!=0):
+                    a = tr_params[prev_tag][tags[u]]
+                else:
+                    a=0
             except KeyError:
                 a = 0
             value = pi*a
@@ -96,10 +102,12 @@ if __name__ == "__main__":
     # print(lentags)
     tr_params = tr.transition(open(file_em, "r", encoding="utf8"))
     tags = list(tr_params)
+    
+    tags.insert(0, "START")
+    tags.insert(len(tags), "STOP")
     print(tags)
-    # print(len(list(tr_params)))
     filePath = "/Users/nashitaabd/Documents/GitHub/01.112-ML-Project/EN/dev.in"
     y = viterbi( open(filePath, "r", encoding="utf8"), em_params, tr_params, tags)
-    # print(y)
+    print(y)
 
     

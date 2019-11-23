@@ -61,22 +61,23 @@ def emmissionWithSmoothing(file, k):
     for word in list(wordCount):
         #   if the total word count of a word is less than k, we replace it with #UNK# with the same count
         if wordCount[word] < k:
+            #print(word + '\n')
             wordCount["#UNK#"] += wordCount[word]
             del wordCount[word]
             #   search through the y->x table and if there is that word, we replace it with #UNK#
             for tag in list(tagToWordDictionary):
                 if word in tagToWordDictionary[tag]:
-                    tagToWordDictionary[tag]['#UNK#'] = tagToWordDictionary[tag][word]
+                    tagToWordDictionary[tag]['#UNK#'] += tagToWordDictionary[tag][word]
                     del tagToWordDictionary[tag][word]
 
     mle = defaultdict(lambda: defaultdict(float))
 
     for tag in tagCount:
         # list(tagToWordDictionary[tag]) returns us ALL the words (all x-values)
+        print(tagToWordDictionary[tag]["#UNK#"])
         for word in list(tagToWordDictionary[tag]):
             mle[tag][word] = float(
                 tagToWordDictionary[tag][word]) / (tagCount[tag])
-    print("number of unique Tags", len(tagCount))
     # for tag in tagCount:
     #     print(tag, mle[tag]["#UNK#"])
     return mle, tagCount
@@ -108,5 +109,5 @@ def getLikelihood(mle, word, tag):
 if __name__ == "__main__":
     filePath = sys.argv[1]
     mle, t = emmissionWithSmoothing(
-        open(filePath+"/train", "r", encoding="utf8"), 200)
+        open(filePath+"/train", "r", encoding="utf8"), 3)
     predictLabel(mle, t, filePath+"/dev.in", filePath+"/dev.prediction.out")

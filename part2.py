@@ -74,7 +74,7 @@ def emmissionWithSmoothing(file, k):
 
     for tag in tagCount:
         # list(tagToWordDictionary[tag]) returns us ALL the words (all x-values)
-        print(tagToWordDictionary[tag]["#UNK#"])
+        # print(tagToWordDictionary[tag]["#UNK#"])
         for word in list(tagToWordDictionary[tag]):
             mle[tag][word] = float(
                 tagToWordDictionary[tag][word]) / (tagCount[tag])

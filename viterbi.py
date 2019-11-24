@@ -14,75 +14,74 @@ def viterbi(file, em_params, tr_params, tags):
 
     # FORWARD PROPAGATION
     n = len(words)
-    T = [[0 for i in range(len(tags))] for i in range(n+2) ]
-   
+    print(n)
+    T = [[0 for i in range(len(tags))] for i in range(n) ]
+    # print(tr_params["STOP"])
+    # base case
+    for u in range(len(tags)):
+        try:
+            T[0][u] = -1*np.log(tr_params[tags[u]]["START"]) - np.log(em.getLikelihood(em_params, words[0], tags[u]))
+        except KeyError:
+            T[0][u] = 0
+        except TypeError:
+            T[0][u] = 0
     
-    for k in range(0, n+2):
-        
+    for k in range(1, n):
+        # print(k)
+        if (words[k].rstrip() != ""):
+            word = words[k].rstrip().rsplit(' ', 1)
             for v in range(len(tags)):
-                # base case : START
-                if (k==0) and (tags[v]=="START"):
-                    T[k][v] = 0
-                if (k==0) and (tags[v]!="START"):
-                    T[k][v] = 0
-                # stop case : STOP
-                if (k==n+1) and (tags[v]=="STOP"):
-                    find_max = []
-                    for u in range(len(tags)):
-                        try:
-                            # print(np.log(tr_params["STOP"][tags[u]]))
-                            value = T[n][u] - np.log(tr_params["STOP"][tags[u]])
-                        except KeyError:
-                            value = 0
-                        find_max.append(value)
-                    T[k][v] = max(find_max)
-                if(k!=0) and (k!=n+1):
-                    if (words[k-1].rstrip() != ""):
-                        word = words[k-1].rstrip().rsplit(' ', 1)
+                find_max = []
+                for u in range(len(tags)):
+                    
+                    try:
+                        pi = T[k-1][u]
                         
-                        find_max = []
-                        for u in range(len(tags)):
+                        if(tr_params[tags[v]] != 0) :
+                            a = -1*np.log(tr_params[tags[v]][tags[u]])
+                            b = em.getLikelihood(em_params, word[0], tags[v])
+                            if(b!=0):
+                                bx = -1*np.log(b)
                             
-                            try:
-                                pi = T[k-1][u]
-                                
-                                if(tr_params[tags[v]] != 0) :
-                                    a = -1*np.log(tr_params[tags[v]][tags[u]])
-                                    # print("a ",a)
-                                    b = em.getLikelihood(em_params, word[0], tags[v])
-                                    if(b!=0):
-                                        bx = -1*np.log(b)
-                                    # print("b ",b)
-                                    # b = em_params[tags[v]][word[0]]
-                                    # if(a!=np.inf) and (b!=np.inf):
-                                    value = pi+a+bx
-                                    # print(a, b, value)
-                                    
-                                else: 
-                                    value = 0
-                            except KeyError:
-                                value = 0
-                            # value = T[k-1][u]*tr_params[v][u]*em_params[v][word[0]]
-                            find_max.append(value)
-                        # print(find_max)
-                        T[k][v] = max(find_max) 
+                            value = pi+a+bx
+                            
+                        else: 
+                            value = 0
+                    except KeyError:
+                        value = 0
+                    find_max.append(value)
+                
+                T[k][v] = max(find_max) 
     
-    # print(T)
+    # print("Finished forward propagation")
+    # print(*T, sep = "\n") 
     # BACKWARD PROPAGATION
-    y = [0 for x in range(n+2)]
+
+    # find last layer with no zeros
+    z = n-1
+    y = [0 for x in range(n-1)]
     max_y = 0
     max_tag = ""
     
-    last_layer = T[n+1]
-    max_index = last_layer.index(max(last_layer))
-    max_tag = tags[max_index]
-    y[len(words)] = max_tag
-    # print(y)
-    y[len(words)+1] = "STOP"
+    last_layer = T[n-2]
+    max_value = 0
+
+    for u in range(len(tags)):
+        try:
+            x = (T[n-2][u]-np.log(tr_params["STOP"][tags[u]]))
+        except KeyError:
+            x = 0
+        if (x>max_value):
+            max_value = x
+            max_tag = tags[u]
+    
+    # max_tag = tags[max_index]
+    y[n-2] = max_tag
+    
 
 
 
-    for m in range(n-1, -1, -1):
+    for m in range(n-3, -1, -1):
         max_y = 0
         max_tag = ""
         prev_tag = y[m+1]
@@ -98,7 +97,8 @@ def viterbi(file, em_params, tr_params, tags):
             except KeyError:
                 a = 0
             value = pi+a
-            if(value>=max_y):
+            # print(words[m], tags[u], value, a)
+            if(value>max_y):
                 max_y = value
                 max_tag = tags[u]
         y[m] = max_tag
@@ -115,7 +115,7 @@ def predictions_file(inputFile, outputfile, y):
         if (lines[i].rstrip() != ""):
             word = lines[i].rstrip()
             # print(word, y[i+1])
-            f.write(word+" "+y[i+1]+"\n")
+            f.write(word+" "+y[i]+"\n")
             
         else:
             f.write('\n')
@@ -129,8 +129,9 @@ if __name__ == "__main__":
     tr_params = tr.transition(open(file_em, "r", encoding="utf8"))
     tags = list(tr_params)
     
-    tags.insert(0, "START")
-    tags.insert(len(tags), "STOP")
+    
+    print(tags)
+    tags.remove("STOP")
     filePath = "/Users/nashitaabd/Documents/GitHub/01.112-ML-Project/EN/dev.in"
     y = viterbi( open(filePath, "r", encoding="utf8"), em_params, tr_params, tags)
     print(y)

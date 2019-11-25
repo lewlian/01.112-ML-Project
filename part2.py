@@ -82,17 +82,17 @@ def emmissionWithSmoothing(file, k):
                 tagToWordDictionary[tag][word]) / (tagCount[tag])
     # for tag in tagCount:
     #     print(tag, e[tag]["#UNK#"])
-    return e, tagCount
+    return e, tagCount, wordCount
 
 
-def predictLabel(e, tags, inputFile, outputFile):
+def predictLabel(e, tags, w, inputFile, outputFile):
     f = open(outputFile, 'w+', encoding="utf8")
     for line in open(inputFile, 'r', encoding="utf8"):
         if (line.rstrip() != ""):
             word = line.rstrip()
             eForWord = []
             for tag in tags:
-                eForWord.append((getLikelihood(e, word, tag), tag))
+                eForWord.append((getLikelihood(e, word, tag, w), tag))
             f.write(word+" "+max(eForWord)[1]+"\n")
             #print(word, max(eForWord)[1])
         else:
@@ -101,15 +101,19 @@ def predictLabel(e, tags, inputFile, outputFile):
     print('Finished writing to File.')
 
 
-def getLikelihood(e, word, tag):
-    if word in e[tag]:
-        return e[tag][word]
+def getLikelihood(e, word, tag, w):
+    # check if word existed in training, ONLY if it doesn't then we return #UNK#, else if it was trained but not in the tag then 0
+    if word in w.keys():
+        if word in e[tag]:
+            return e[tag][word]
+        else:
+            return 0
     else:
         return e[tag]["#UNK#"]
 
 
 if __name__ == "__main__":
     filePath = sys.argv[1]
-    e, t = emmissionWithSmoothing(
+    e, t, w = emmissionWithSmoothing(
         open(filePath+"/train", "r", encoding="utf8"), 3)
-    predictLabel(e, t, filePath+"/dev.in", filePath+"/dev.p2.out")
+    predictLabel(e, t, w, filePath+"/dev.in", filePath+"/dev.p2.out")

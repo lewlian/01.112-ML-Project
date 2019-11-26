@@ -17,10 +17,27 @@ def transition(file):
     w = first_line.rstrip().rsplit(' ', 1)
     first_tag = w[1]
     tagToWordDictionary[first_tag]["START"] += 1
-
+    # print(lines)
     for i in range(1, len(lines)):
         line = lines[i]
         previous_line = lines[i-1]
+
+        # STOP CASE : line = "", prev_line = "tag"
+        if (line.rstrip() == ""):
+            w_i1 = previous_line.rstrip().rsplit(' ', 1)
+            
+            tag_i1 = w_i1[1]
+            tagToWordDictionary["STOP"][tag_i1] += 1
+            tagCount["STOP"] += 1
+        
+        # START CASE : prev_line = "", line = "tag"
+        if (previous_line.rstrip() == ""):
+            w_i = line.rstrip().rsplit(' ', 1)
+
+            tag_i = w_i[1]
+            tagToWordDictionary[tag_i]["START"] += 1
+            tagCount[tag_i] += 1
+
         if (line.rstrip() != "") and (previous_line.rstrip() != ""):
             #   strip all trailing spaces first and then split by white spaces limit to 1
             w_i = line.rstrip().rsplit(' ', 1)
@@ -29,31 +46,10 @@ def transition(file):
             tag_i = w_i[1]
             tag_i1 = w_i1[1]
             
-            # case 1 = found full stop, STOP node next
-            if(w_i[0]=="."):
-                tagToWordDictionary["STOP"][tag_i] += 1
-                tagCount["STOP"] += 1
-            # case 2 = previous word is full stop, pervious node is START
-            if(w_i1[0]=="."):
-                tagToWordDictionary[tag_i]["START"] += 1
-                tagCount[tag_i] += 1
             # case 3 = other words
-            else:
-                tagToWordDictionary[tag_i][tag_i1] += 1
-                tagCount[tag_i] += 1
             
-    
-    # LAST LINE
-    last_line = lines[len(lines)-1]
-    if (last_line.rstrip() != ""):
-        wl = last_line.rstrip().rsplit(' ', 1)
-        last_tag = wl[1]
-        tagToWordDictionary["STOP"][last_tag] += 1
-    else:
-        last_line = lines[len(lines)-2]
-        wl = last_line.rstrip().rsplit(' ', 1)
-        last_tag = wl[1]
-        tagToWordDictionary["STOP"][last_tag] += 1
+            tagToWordDictionary[tag_i][tag_i1] += 1
+            tagCount[tag_i] += 1
 
     # f = open("tags.txt", "w")
     # f.write(json.dumps(tagCount))

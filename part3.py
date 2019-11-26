@@ -17,9 +17,12 @@ def transition(file):
     w = first_line.rstrip().rsplit(' ', 1)
     first_tag = w[1]
     tagToWordDictionary[first_tag]["START"] += 1
-    # print(lines)
+    tagCount[first_tag] += 1
+    # print(first_line)
+
     for i in range(1, len(lines)):
         line = lines[i]
+        # print(line)
         previous_line = lines[i-1]
 
         # STOP CASE : line = "", prev_line = "tag"
@@ -62,7 +65,8 @@ def transition(file):
     mle = defaultdict(int)
 
     #calculate transition probs
-
+    # print("tagCount ",str(tagCount))
+    # print("tagToWordDictionary ",str(tagToWordDictionary))
     for tag in tagCount:
         #   Create a dictionary for each tag which is y-values
         mle[tag] = {}

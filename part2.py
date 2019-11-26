@@ -101,13 +101,26 @@ def predictLabel(e, tags, w, inputFile, outputFile):
 
 def getLikelihood(e, word, tag, w):
     # check if word existed in training, ONLY if it doesn't then we return #UNK#, else if it was trained but not in the tag then 0
-    if word in w.keys():
+    key_list = list(w.keys())
+#     print(key_list)
+#     print(word)
+#     print(word in key_list)
+    if word in w:
+#         print('word in keys')
         if word in e[tag]:
-            return e[tag][word]
+#             print('word in tag')
+            out = e[tag][word]
+#             print('GLI:',out)
         else:
-            return 0
+#             print('trained but not in tag')
+            out = 0
+#             print('GLI:',out)
     else:
-        return e[tag]["#UNK#"]
+#         print('unknown:',word)
+        out = e[tag]["#UNK#"]
+#         print('GLI:',out)
+#     print('GLI_final:',out)
+    return out
 
 
 if __name__ == "__main__":

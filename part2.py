@@ -82,6 +82,7 @@ def emmissionWithSmoothing(file, k):
                 tagToWordDictionary[tag][word]) / (tagCount[tag])
     # for tag in tagCount:
     #     print(tag, e[tag]["#UNK#"])
+    print(tagCount)
     return e, tagCount, wordCount
 
 

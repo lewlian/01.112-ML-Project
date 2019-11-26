@@ -17,7 +17,6 @@ def transition(file):
     w = first_line.rstrip().rsplit(' ', 1)
     first_tag = w[1]
     tagToWordDictionary[first_tag]["START"] += 1
-    tagToWordDictionary["START"][first_tag] += 1
     tagCount[first_tag] += 1
     tagCount["START"] += 1
     # print(first_line)
@@ -41,7 +40,6 @@ def transition(file):
 
             tag_i = w_i[1]
             tagToWordDictionary[tag_i]["START"] += 1
-            tagToWordDictionary["START"][tag_i] += 1
             tagCount[tag_i] += 1
             tagCount["START"] += 1
 
@@ -58,13 +56,7 @@ def transition(file):
             tagToWordDictionary[tag_i][tag_i1] += 1
             tagCount[tag_i] += 1
 
-    # f = open("tags.txt", "w")
-    # f.write(json.dumps(tagCount))
-    # f.close()
-
-    # f = open("tags_dict.txt", "w")
-    # f.write(json.dumps(tagToWordDictionary))
-    # f.close()
+    
 
     mle = defaultdict(int)
 

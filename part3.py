@@ -17,7 +17,9 @@ def transition(file):
     w = first_line.rstrip().rsplit(' ', 1)
     first_tag = w[1]
     tagToWordDictionary[first_tag]["START"] += 1
+    tagToWordDictionary["START"][first_tag] += 1
     tagCount[first_tag] += 1
+    tagCount["START"] += 1
     # print(first_line)
 
     for i in range(1, len(lines)):
@@ -39,7 +41,9 @@ def transition(file):
 
             tag_i = w_i[1]
             tagToWordDictionary[tag_i]["START"] += 1
+            tagToWordDictionary["START"][tag_i] += 1
             tagCount[tag_i] += 1
+            tagCount["START"] += 1
 
         if (line.rstrip() != "") and (previous_line.rstrip() != ""):
             #   strip all trailing spaces first and then split by white spaces limit to 1
@@ -74,7 +78,7 @@ def transition(file):
         
         for tag_i_minus_1 in list(tagToWordDictionary[tag]):
             mle[tag][tag_i_minus_1] = float(
-                tagToWordDictionary[tag][tag_i_minus_1]) / (tagCount[tag])
+                tagToWordDictionary[tag][tag_i_minus_1]) / (tagCount[tag_i_minus_1])
 
     return mle
 

@@ -93,7 +93,8 @@ def predictLabel(e, tags, w, inputFile, outputFile):
                 eForWord.append((getLikelihood(e, word, tag, w), tag))
             f.write(word+" "+max(eForWord)[1]+"\n")
             if max(eForWord)[0] == 0:
-                print(word, max(eForWord)[0])
+#                 print(word, max(eForWord)[0])
+                print('ERROR')
         else:
             f.write('\n')
     f.close()

@@ -12,7 +12,7 @@ class perceptronTagger():
         #                 "I-neutral", "B-neutral", "I-negative", "B-negative"]
         self.weight_counts = weight_counts
 
-    def predict(self, word):
+    def predict(self, word, prevTag):
         # scores = defaultdict(float)
 
         # Case for prevTag -> Stop
@@ -44,17 +44,33 @@ class perceptronTagger():
     def train(self, n_iter, document):
         # document is basically the entire thin in a list[(word,tag),(word,tag)] for mat
         for i in range(n_iter):
-            for word, tag in document:
-                if word != "":
-                    guess = self.predict(word)
+            for i in range(1, len(document)):
+                word = document[i][0]
+                tag = document[i][1]
+                prev_word = document[i-1][0]
+                prev_tag = document[i-1][1] #NEED TO SCORE PREVIOUS GUESS, CANNOT USE THIS ONE
+
+                if word=="":
+                    guess = self.predict(word, prev_tag)
+                    prev_tag2 = document[i-2][1]
+                    guess2 = self.predict(prev_word, prev_tag2)
+                    self.a[guess2]["STOP"] += 1 #CANNOT UPDATE REAL PREVIOUS TAG, MUST UPDATE PREDICTED PREVIOUS TAG
+
+                if prev_word == "":
+                    guess = self.predict(word, prev_tag)
+                    self.a["START"][guess] += 1
+
+                if prev_word != "" and word != "":
+                    guess = self.predict(word, prev_tag)
                     # if the prediction is wrong
                     if guess != tag:
                        # Basically to cover the first it eration when the dictionary a is still empty.
                         if word not in self.a:
-                            self.a[word] = {"O": 0, "I-positive": 0, "B-positive": 0,
+                            self.b[word] = {"O": 0, "I-positive": 0, "B-positive": 0,
                                             "I-neutral": 0, "B-neutral": 0, "I-negative": 0, "B-negative": 0}
-                        self.a[word][tag] += 1
-                        self.a[word][guess] -= 1
+                        self.b[word][tag] += 1
+                        self.b[word][guess] -= 1
+                        self.a[prev_tag][g]
             random.shuffle(document)
 
 

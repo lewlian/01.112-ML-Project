@@ -92,7 +92,9 @@ def predictLabel(e, tags, w, inputFile, outputFile):
             for tag in tags:
                 eForWord.append((getLikelihood(e, word, tag, w), tag))
             f.write(word+" "+max(eForWord)[1]+"\n")
-            #print(word, max(eForWord)[1])
+            if max(eForWord)[0] == 0:
+#                 print(word, max(eForWord)[0])
+                print('ERROR')
         else:
             f.write('\n')
     f.close()
@@ -106,17 +108,18 @@ def getLikelihood(e, word, tag, w):
 #     print(word)
 #     print(word in key_list)
     if word in w:
-#         print('word in keys')
+        #         print('word in keys')
         if word in e[tag]:
-#             print('word in tag')
+            #             print('word in tag')
             out = e[tag][word]
 #             print('GLI:',out)
         else:
-#             print('trained but not in tag')
+            #             print('trained but not in tag')
+
             out = 0
 #             print('GLI:',out)
     else:
-#         print('unknown:',word)
+        #         print('unknown:',word)
         out = e[tag]["#UNK#"]
 #         print('GLI:',out)
 #     print('GLI_final:',out)

@@ -1,6 +1,22 @@
 b
+c
+a
 b
 
-b
-b
+a
+c
+a
 
+b
+c
+c
+b
+c
+
+c
+b
+a
+
+c
+c
+c

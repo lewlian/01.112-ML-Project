@@ -11,6 +11,7 @@ class perceptronTagger():
         # self.classes = ["O", "I-positive", "B-positive",
         #                 "I-neutral", "B-neutral", "I-negative", "B-negative"]
         self.weight_counts = weight_counts
+        self.guess_list = ["", ]
 
     def predict(self, word, prevTag):
         # scores = defaultdict(float)
@@ -52,11 +53,11 @@ class perceptronTagger():
                 prev_tag = document[i-1][1]
 
                 if prev_word == "":
-                    guess = self.predict(word, prev_tag)
+                    guess = self.predict(word, guess[i-1])
                     self.a["START"][guess] += 1
 
                 if prev_word != "" and word != "":
-                    guess = self.predict(word, prev_tag)
+                    guess = self.predict(word, guess_list[i-1])
                     # if the prediction is wrong
                     if guess != tag:
                        # To cover the first iteration when the dictionary a is still empty.

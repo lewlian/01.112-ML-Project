@@ -8,10 +8,7 @@ class perceptronTagger():
     def __init__(self, weight_counts):
         self.a = defaultdict(int)
         self.b = defaultdict(int)
-        # self.classes = ["O", "I-positive", "B-positive",
-        #                 "I-neutral", "B-neutral", "I-negative", "B-negative"]
         self.weight_counts = weight_counts
-        self.guess_list = ["", ]
 
     def predict(self, word, prevTag):
         # scores = defaultdict(float)
@@ -45,6 +42,9 @@ class perceptronTagger():
     def train(self, n_iter, document):
         # document is basically the entire thing in a list[(word,tag),(word,tag)] for mat
         for i in range(n_iter):
+            # Stores a list of the guesses so that we can use it in predict (and not use the actual one)
+            # initialize with a "" because the TAG of the very first word should be START
+            list_of_guesses = ["", ]
             for i in range(1, len(document)):
                 word = document[i][0]
                 tag = document[i][1]
@@ -53,11 +53,13 @@ class perceptronTagger():
                 prev_tag = document[i-1][1]
 
                 if prev_word == "":
-                    guess = self.predict(word, guess[i-1])
+                    guess = self.predict(word, list_of_guesses[i-1])
+                    list_of_guesses.append(guess)
                     self.a["START"][guess] += 1
 
                 if prev_word != "" and word != "":
-                    guess = self.predict(word, guess_list[i-1])
+                    guess = self.predict(word, list_of_guesses[i-1])
+                    list_of_guesses.append(guess)
                     # if the prediction is wrong
                     if guess != tag:
                        # To cover the first iteration when the dictionary a is still empty.
@@ -94,6 +96,6 @@ def parse_feature_tag_pairs(folder_path, filename):
 output, weight_counts = parse_feature_tag_pairs('./SG/', 'train')
 print(output)
 test = perceptronTagger(weight_counts)
-Number of iterations to run perceptron
+# Number of iterations to run perceptron
 n = 10
 test.train(n, output)

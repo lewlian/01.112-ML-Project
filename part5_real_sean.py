@@ -18,6 +18,7 @@ class perceptronTagger():
         # Case for prevTag -> Stop
         if word == "" and prevTag != "":
             return ""
+
         # Case for Start -> word
         if word != "" and prevTag == "":
             if word in self.a:
@@ -50,13 +51,6 @@ class perceptronTagger():
                 # NEED TO SCORE PREVIOUS GUESS, CANNOT USE THIS ONE
                 prev_tag = document[i-1][1]
 
-                if word == "":
-                    guess = self.predict(word, prev_tag)
-                    prev_tag2 = document[i-2][1]
-                    guess2 = self.predict(prev_word, prev_tag2)
-                    # CANNOT UPDATE REAL PREVIOUS TAG, MUST UPDATE PREDICTED PREVIOUS TAG
-                    self.a[guess2]["STOP"] += 1
-
                 if prev_word == "":
                     guess = self.predict(word, prev_tag)
                     self.a["START"][guess] += 1
@@ -71,14 +65,9 @@ class perceptronTagger():
                                             "I-neutral": 0, "B-neutral": 0, "I-negative": 0, "B-negative": 0}
                         self.b[word][tag] += 1
                         self.b[word][guess] -= 1
-<<<<<<< HEAD
-                        self.a[prev_tag][guess] -=1
-                        self.a[prev_tag][tag] += 1 
-            # random.shuffle(document)
-=======
                         self.a[prev_tag][tag]
+
             random.shuffle(document)
->>>>>>> 6c20a189f22e04e020b0d6dfff1f31ff2a8f0308
 
 
 def parse_feature_tag_pairs(folder_path, filename):

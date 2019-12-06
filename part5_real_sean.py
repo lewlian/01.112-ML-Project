@@ -25,7 +25,8 @@ class perceptronTagger():
                 # iterate through each tag of the word
                 for tag in self.b[word]:
                     # multiply the emission with the
-                    scores_for_word[tag] = (b[word][tag] * a["START"][tag])
+                    scores_for_word[tag] = (
+                        self.b[word][tag] * self.a["START"][tag])
                 return max(scores_for_word, key=scores_for_word.get)
 
         # Middle Scenario
@@ -35,26 +36,26 @@ class perceptronTagger():
                 # iterate through each tag of the word
                 for tag in self.b[word]:
                     # multiply the emission with the
-                    scores_for_word[tag] = (b[word][tag] * a[prevTag][tag])
+                    scores_for_word[tag] = (
+                        self.b[word][tag] * self.a[prevTag][tag])
                 return max(scores_for_word, key=scores_for_word.get)
-            #     for clas, weight in a.items():
-            #         scores[clas] += weight
-            # return max(self.classes, key=lambda clas: (scores[clas], clas))
 
     def train(self, n_iter, document):
-        # document is basically the entire thin in a list[(word,tag),(word,tag)] for mat
+        # document is basically the entire thing in a list[(word,tag),(word,tag)] for mat
         for i in range(n_iter):
             for i in range(1, len(document)):
                 word = document[i][0]
                 tag = document[i][1]
                 prev_word = document[i-1][0]
-                prev_tag = document[i-1][1] #NEED TO SCORE PREVIOUS GUESS, CANNOT USE THIS ONE
+                # NEED TO SCORE PREVIOUS GUESS, CANNOT USE THIS ONE
+                prev_tag = document[i-1][1]
 
-                if word=="":
+                if word == "":
                     guess = self.predict(word, prev_tag)
                     prev_tag2 = document[i-2][1]
                     guess2 = self.predict(prev_word, prev_tag2)
-                    self.a[guess2]["STOP"] += 1 #CANNOT UPDATE REAL PREVIOUS TAG, MUST UPDATE PREDICTED PREVIOUS TAG
+                    # CANNOT UPDATE REAL PREVIOUS TAG, MUST UPDATE PREDICTED PREVIOUS TAG
+                    self.a[guess2]["STOP"] += 1
 
                 if prev_word == "":
                     guess = self.predict(word, prev_tag)
@@ -64,13 +65,13 @@ class perceptronTagger():
                     guess = self.predict(word, prev_tag)
                     # if the prediction is wrong
                     if guess != tag:
-                       # Basically to cover the first it eration when the dictionary a is still empty.
+                       # To cover the first iteration when the dictionary a is still empty.
                         if word not in self.a:
                             self.b[word] = {"O": 0, "I-positive": 0, "B-positive": 0,
                                             "I-neutral": 0, "B-neutral": 0, "I-negative": 0, "B-negative": 0}
                         self.b[word][tag] += 1
                         self.b[word][guess] -= 1
-                        self.a[prev_tag][g]
+                        self.a[prev_tag][tag]
             random.shuffle(document)
 
 
@@ -95,7 +96,8 @@ def parse_feature_tag_pairs(folder_path, filename):
 
 
 output, weight_counts = parse_feature_tag_pairs('./SG/', 'train')
+print(output)
 test = perceptronTagger(weight_counts)
-# Number of iterations to run perceptron
+Number of iterations to run perceptron
 n = 10
 test.train(n, output)

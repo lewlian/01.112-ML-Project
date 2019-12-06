@@ -70,8 +70,9 @@ class perceptronTagger():
                                             "I-neutral": 0, "B-neutral": 0, "I-negative": 0, "B-negative": 0}
                         self.b[word][tag] += 1
                         self.b[word][guess] -= 1
-                        self.a[prev_tag][g]
-            random.shuffle(document)
+                        self.a[prev_tag][guess] -=1
+                        self.a[prev_tag][tag] += 1 
+            # random.shuffle(document)
 
 
 def parse_feature_tag_pairs(folder_path, filename):

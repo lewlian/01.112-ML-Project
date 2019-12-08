@@ -173,19 +173,27 @@ def parse_feature_tag_pairs(folder_path, filename):
 
     return output, tag_counts
 
+def isFirstCapital(token):
+    if token[0].upper() == token[0]:
+        return "yes"
+    else:
+        return "no"
 
 def get_features(word, prev_word, prev_tag, prev2_tag, prev2_word, next_word, next2_word):
-    word = word.lower()
-    prev_word = prev_word.lower()
-    prev2_word = prev2_word.lower()
-    prev2_tag = prev2_tag.lower()
-    next_word = next_word.lower()
-    next2_word = next2_word.lower()
-
     def add(name, *args):
         features.add('+'.join((name,) + tuple(args)))
     features = set()
+
+    # add("isFirstCapital", isFirstCapital(word))
+    word = word.lower()
+    prev_word = prev_word.lower()
+    prev2_word = prev2_word.lower()
+    next_word = next_word.lower()
+    next2_word = next2_word.lower()
+
+    
     add('iSuffix', word[-3:])
+    add('iSuffix1', word[-2:]) #just added
     add("iPrefix", word[0:2])
     add("i-1Tag", prev_tag)
     add("iWord", word)
@@ -194,18 +202,21 @@ def get_features(word, prev_word, prev_tag, prev2_tag, prev2_word, next_word, ne
     add("i-2Tag", prev2_tag)
     add("i+1Word", next_word)
     add("i+2Word", next2_word)
+    add("i-1Suffix", prev_word[-3:]) #just added
+    add("i+1Suffix", next_word[-3:]) #just added
+
     return features
 
 
-output, tag_counts = parse_feature_tag_pairs('./EN/', 'train')
+output, tag_counts = parse_feature_tag_pairs('./AL/', 'train')
 
 test = perceptronTagger(tag_counts)
 
 # Number of iterations to run perceptron
-n = 30
+n = 10
 model_weights = test.train(n, output)
-fileIn = './EN/dev.in'
-fileOut = './EN/dev.p5.out'
+fileIn = './AL/dev.in'
+fileOut = './AL/devnash.p5.out'
 predict_test(fileIn, fileOut, test)
 
 

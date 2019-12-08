@@ -204,19 +204,18 @@ def get_features(word, prev_word, prev_tag, prev2_tag, prev2_word, next_word, ne
     add("i+2Word", next2_word)
     add("i-1Suffix", prev_word[-3:]) #just added
     add("i+1Suffix", next_word[-3:]) #just added
-
     return features
 
 
-output, tag_counts = parse_feature_tag_pairs('./AL/', 'train')
+output, tag_counts = parse_feature_tag_pairs('./EN/', 'train')
 
 test = perceptronTagger(tag_counts)
 
 # Number of iterations to run perceptron
-n = 10
+n = 30
 model_weights = test.train(n, output)
-fileIn = './AL/dev.in'
-fileOut = './AL/devnash.p5.out'
+fileIn = './Test/EN/test.in'
+fileOut = './EN/test.p5.out'
 predict_test(fileIn, fileOut, test)
 
 

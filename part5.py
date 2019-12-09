@@ -175,46 +175,41 @@ def parse_feature_tag_pairs(folder_path, filename):
     return output, tag_counts
 
 
-def isFirstCapital(token):
-    if token[0].upper() == token[0]:
-        return "yes"
-    else:
-        return "no"
+def isFirstCapital(token): #check if first letter is capital
+    if token[0].upper() == token[0]: return "yes"
+    else: return "no"
 
-
-def isAlpha(word):
-    if word.isalpha():
-        return "yes"
-    else:
-        return "no"
-
+def isAlpha(word): #check if the word contains digits or punctuation
+    if word.isalpha(): return "yes"
+    else: return "no"
 
 def get_features(word, prev_word, prev_tag, prev2_tag, prev2_word, next_word, next2_word):
     def add(name, *args):
-        features.add('+'.join((name,) + tuple(args)))
+        features.add('+'.join((name,) + tuple(args))) #generate the features
     features = set()
 
     add("isFirstCapital", isFirstCapital(word))
     add("isAlpha", isAlpha(word))
 
+    #convert to lower case for better performance
     word = word.lower()
     prev_word = prev_word.lower()
     prev2_word = prev2_word.lower()
     next_word = next_word.lower()
     next2_word = next2_word.lower()
 
-    add('iSuffix', word[-3:])
-    add('iSuffix1', word[-2:])  # just added
-    add("iPrefix", word[0:2])
-    add("i-1Tag", prev_tag)
+    add('iSuffix', word[-3:]) #suffix of current word
+    add('iSuffix1', word[-2:])  #suffix of current word
+    add("iPrefix", word[0:2]) #prefix of current word
+    add("i-1Tag", prev_tag) 
     add("iWord", word)
     add("i-1Word", prev_word)
     add("i-2Word", prev2_word)
     add("i-2Tag", prev2_tag)
     add("i+1Word", next_word)
     add("i+2Word", next2_word)
-    add("i-1Suffix", prev_word[-3:])  # just added
-    add("i+1Suffix", next_word[-3:])  # just added
+    add("i-1Suffix", prev_word[-3:])  #suffix of previous word
+    add("i+1Suffix", next_word[-3:])  #suffix of next word
     return features
 
 

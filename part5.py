@@ -4,6 +4,7 @@ import os
 import random
 import string
 
+
 class perceptronTagger():
     def __init__(self, tag_counts):
         self.tag_counts = tag_counts
@@ -24,7 +25,7 @@ class perceptronTagger():
 
     def train(self, n_iter, document):
         for i in range(n_iter):
-            print("Training for round...", i)
+            print("Training for iteration...", i)
             for features, tag in document:
                 guess = self.predict(features)
                 if guess != tag:
@@ -35,7 +36,7 @@ class perceptronTagger():
         return self.weights
 
 
-def predict_test(fileIn, fileOut, model):
+def parse_predict_test_file(fileIn, fileOut, model):
     fout = open(fileOut, 'w+', encoding="utf8")
     # list_new_guesses = [""]
     finput = open(fileIn, 'r', encoding="utf8")
@@ -172,6 +173,9 @@ def parse_feature_tag_pairs(folder_path, filename):
 
     return output, tag_counts
 
+
+# FEATURE EXTRACTION
+
 def isFirstCapital(token):
     if token[0].upper() == token[0]:
         return "yes"
@@ -223,4 +227,4 @@ n = 10
 model_weights = test.train(n, output)
 fileIn = './EN/dev.in'
 fileOut = './EN/dev.p5.out'
-predict_test(fileIn, fileOut, test)
+parse_predict_test_file(fileIn, fileOut, test)

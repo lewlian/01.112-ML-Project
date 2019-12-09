@@ -202,7 +202,7 @@ output, tag_counts = parse_feature_tag_pairs('./EN/', 'train')
 test = perceptronTagger(tag_counts)
 
 # Number of iterations to run perceptron
-n = 30
+n = 10
 model_weights = test.train(n, output)
 fileIn = './EN/dev.in'
 fileOut = './EN/dev.p5.out'

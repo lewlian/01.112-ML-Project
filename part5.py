@@ -228,4 +228,4 @@ n = 10
 model_weights = test.train(n, output)
 fileIn = './AL/dev.in'
 fileOut = './AL/dev.p5.out'
-predict_test(fileIn, fileOut, test)
+parse_predict_test_file(fileIn, fileOut, test)

@@ -11,6 +11,9 @@ def transition(file):
     lines = file.readlines()
 
     # tagToWordDictionary structure: { y_i : { y_i-1 : count( y_i-1, y_i ) } }
+    # tagCount: { u : count(u) }
+    # mle: { y_i : y_i-1 : q(y_i, y_i-1) }
+
 
     # FIRST LINE
     first_line = lines[0]
@@ -19,19 +22,17 @@ def transition(file):
     tagToWordDictionary[first_tag]["START"] += 1
     tagCount[first_tag] += 1
     tagCount["START"] += 1
-    # print(first_line)
 
     for i in range(1, len(lines)):
-        line = lines[i]
-        # print(line)
-        previous_line = lines[i-1]
+        line = lines[i] # current line
+        previous_line = lines[i-1] # previous line
 
         # STOP CASE : line = "", prev_line = "tag"
         if (line.rstrip() == ""):
             w_i1 = previous_line.rstrip().rsplit(' ', 1)
             
-            tag_i1 = w_i1[1]
-            tagToWordDictionary["STOP"][tag_i1] += 1
+            tag_i_minus_1 = w_i1[1]
+            tagToWordDictionary["STOP"][tag_i_minus_1] += 1
             tagCount["STOP"] += 1
         
         # START CASE : prev_line = "", line = "tag"
@@ -43,42 +44,35 @@ def transition(file):
             tagCount[tag_i] += 1
             tagCount["START"] += 1
 
+        # case 3 = other words
         if (line.rstrip() != "") and (previous_line.rstrip() != ""):
             #   strip all trailing spaces first and then split by white spaces limit to 1
             w_i = line.rstrip().rsplit(' ', 1)
             w_i1 = previous_line.rstrip().rsplit(' ', 1)
             
             tag_i = w_i[1]
-            tag_i1 = w_i1[1]
+            tag_i_minus_1 = w_i1[1]
             
-            # case 3 = other words
-            
-            tagToWordDictionary[tag_i][tag_i1] += 1
+            tagToWordDictionary[tag_i][tag_i_minus_1] += 1
             tagCount[tag_i] += 1
 
-    
-
-    mle = defaultdict(int)
-
     #calculate transition probs
-    # print("tagCount ",str(tagCount))
-    # print("tagToWordDictionary ",str(tagToWordDictionary))
+    mle = defaultdict(int)
     for tag in tagCount:
         #   Create a dictionary for each tag which is y-values
         mle[tag] = {}
         #   list(tagToWordDictionary[tag]) returns us ALL the words (all x-values)
-        
         for tag_i_minus_1 in list(tagToWordDictionary[tag]):
             mle[tag][tag_i_minus_1] = float(
-                tagToWordDictionary[tag][tag_i_minus_1]) / (tagCount[tag_i_minus_1])
-
+                tagToWordDictionary[tag][tag_i_minus_1]) / (tagCount[tag_i_minus_1]) #count(u,v)/count(u)
     return mle
 
 
 
 if __name__ == "__main__":
     
-    filePath = "/Users/nashitaabd/Documents/GitHub/01.112-ML-Project/EN/train"
+    filePath = "./EN/train"
     mle = transition(
         open(filePath, "r", encoding="utf8"))
+    # mle consists of all transition parameters
     

@@ -212,8 +212,8 @@ def isAlpha(word):  # check if the word contains digits or punctuation
 def get_features(word, prev_word, prev_tag, prev2_tag, prev2_word, next_word, next2_word):
     def add(name, *args):
         features.add('+'.join((name,) + tuple(args)))  # generate the features
+    # set can only have unique elements.
     features = set()
-
     add("isFirstCapital", isFirstCapital(word))
     add("isAlpha", isAlpha(word))
 

@@ -239,7 +239,7 @@ if __name__ == "__main__":
     max_count = 0
     for k,v in tagCount.items():
         if v > max_count:
-            print(v)
+            # print(v)
             common = k
             max_count = v
     index_unknown = tags.index(common)

@@ -23,16 +23,21 @@ class perceptronTagger():
             return max(self.classes, key=lambda tag: (scores[tag], tag))
         return ""
 
-    def train(self, n_iter, document):
-        for i in range(n_iter):
+    def train(self, iter, document):
+        for i in range(iter):
             print("Training for iteration...", i)
-            for features, tag in document:
-                guess = self.predict(features)
-                if guess != tag:
+            for features, correct_tag in document:
+                predicted_tag = self.predict(features)
+                if predicted_tag != correct_tag:
                     for feature in features:
-                        self.weights[feature][guess] -= 1
-                        self.weights[feature][tag] += 1
+                        self.weights[feature][predicted_tag] -= 1
+                        self.weights[feature][correct_tag] += 1
             random.shuffle(document)
+
+        for feature in self.weights:
+            for tag in self.weights[feature]:
+                self.weights[feature][tag] = self.weights[feature][tag]/(iter*len(document))
+            
         return self.weights
 
 
@@ -190,7 +195,7 @@ def get_features(word, prev_word, prev_tag, prev2_tag, prev2_word, next_word, ne
 
     add("isFirstCapital", isFirstCapital(word))
     add("isAlpha", isAlpha(word))
-
+    
     #convert to lower case for better performance
     word = word.lower()
     prev_word = prev_word.lower()
@@ -214,13 +219,17 @@ def get_features(word, prev_word, prev_tag, prev2_tag, prev2_word, next_word, ne
 
 
 # RUNNING THE CODE
-output, tag_counts = parse_feature_tag_pairs('./AL/', 'train')
+output, tag_counts = parse_feature_tag_pairs('./EN/', 'train')
 
 test = perceptronTagger(tag_counts)
 
 # Number of iterations to run perceptron
-n = 10
+n = 20
 model_weights = test.train(n, output)
-fileIn = './AL/dev.in'
-fileOut = './AL/dev.p5.out'
+fileIn = './EN/dev.in'
+fileOut = './EN/devavg.p5.out'
 parse_predict_test_file(fileIn, fileOut, test)
+
+
+# 20 iter, no avg : 0.8951, 0.9007 0.8948
+# 20 iter, avg : 0.9035, 0.8962

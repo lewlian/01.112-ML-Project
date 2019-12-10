@@ -183,7 +183,7 @@ if __name__ == "__main__":
     tags.remove("START")
 
     filePath = dataset+"/dev.in"
-    fileout = dataset+"/dev.p4.out"
+    fileout = dataset+"/dev.p4final.out"
 
     y = viterbi_kth((open(filePath, "r", encoding="utf8")), em_params, tr_params, tags, k)
     predictions_file(filePath, fileout, y)

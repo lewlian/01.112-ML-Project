@@ -172,7 +172,8 @@ def predictions_file(inputFile, outputfile, y):
 
 if __name__ == "__main__":
 
-    dataset = "AL"
+    dataset = sys.argv[1]
+    k = sys.argv[2]
     file_em = dataset+"/train"
     em_params, tagCount, w = em.emmissionWithSmoothing(open(file_em, "r", encoding="utf8"), 3)
 
@@ -184,5 +185,5 @@ if __name__ == "__main__":
     filePath = dataset+"/dev.in"
     fileout = dataset+"/dev.p4final.out"
 
-    y = viterbi_kth((open(filePath, "r", encoding="utf8")), em_params, tr_params, tags, 7)
+    y = viterbi_kth((open(filePath, "r", encoding="utf8")), em_params, tr_params, tags, k)
     predictions_file(filePath, fileout, y)

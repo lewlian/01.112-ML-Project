@@ -223,7 +223,7 @@ def predictions_file(inputFile, outputfile, y):
 
 if __name__ == "__main__":
 
-    dataset = "EN"
+    dataset = sys.argv[1]
     file_em = dataset+"/train"
     em_params, tagCount, w = em.emmissionWithSmoothing(open(file_em, "r", encoding="utf8"), 3)
 

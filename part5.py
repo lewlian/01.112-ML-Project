@@ -249,13 +249,13 @@ def get_features(word, prev_word, prev_tag, prev2_tag, prev2_word, next_word, ne
 
 
 # RUNNING THE CODE
-output, tag_counts = parse_feature_tag_pairs('./EN/', 'train')
+output, tag_counts = parse_feature_tag_pairs('./AL/', 'train')
 test = perceptronTagger(tag_counts)
 
 # Number of iterations to run perceptron
 n = 20
 model_weights = test.train(n, output)
-fileIn = './EN/dev.in'
-fileOut = './EN/dev.p5.out'
+fileIn = './Test/AL/test.in'
+fileOut = './Test/AL/test.p5.out'
 parse_predict_test_file(fileIn, fileOut, test)
 

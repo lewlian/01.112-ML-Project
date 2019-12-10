@@ -35,7 +35,7 @@ class perceptronTagger():
             print("Training for iteration...", i)
 
 
-# pass in the features and correct tag to predict function
+            # pass in the features and correct tag to predict function
             for features, correct_tag in document:
                 predicted_tag = self.predict(features)
                 # update weights only if there is any wrong prediction
@@ -45,6 +45,7 @@ class perceptronTagger():
                         self.weights[feature][correct_tag] += 1
             random.shuffle(document)
 
+        #averaging perceptron weights
         for feature in self.weights:
             for tag in self.weights[feature]:
                 self.weights[feature][tag] = self.weights[feature][tag] / \
@@ -248,16 +249,13 @@ def get_features(word, prev_word, prev_tag, prev2_tag, prev2_word, next_word, ne
 
 
 # RUNNING THE CODE
-output, tag_counts = parse_feature_tag_pairs('./AL/', 'train')
+output, tag_counts = parse_feature_tag_pairs('./EN/', 'train')
 test = perceptronTagger(tag_counts)
 
 # Number of iterations to run perceptron
 n = 20
 model_weights = test.train(n, output)
 fileIn = './EN/dev.in'
-fileOut = './EN/devavg.p5.out'
+fileOut = './EN/dev.p5.out'
 parse_predict_test_file(fileIn, fileOut, test)
 
-
-# 20 iter, no avg : 0.8951, 0.9007 0.8948
-# 20 iter, avg : 0.9035, 0.8962

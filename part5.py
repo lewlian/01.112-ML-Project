@@ -33,17 +33,13 @@ class perceptronTagger():
     def train(self, iter, document):
         for i in range(iter):
             print("Training for iteration...", i)
-<<<<<<< HEAD
+
+
+# pass in the features and correct tag to predict function
             for features, correct_tag in document:
                 predicted_tag = self.predict(features)
-                if predicted_tag != correct_tag:
-=======
-            # pass in the features and correct tag to predict function
-            for features, tag in document:
-                guess = self.predict(features)
                 # update weights only if there is any wrong prediction
-                if guess != tag:
->>>>>>> 114c18add1f3e41072e4d9c64201c87f7398c8bd
+                if predicted_tag != correct_tag:
                     for feature in features:
                         self.weights[feature][predicted_tag] -= 1
                         self.weights[feature][correct_tag] += 1
@@ -51,8 +47,9 @@ class perceptronTagger():
 
         for feature in self.weights:
             for tag in self.weights[feature]:
-                self.weights[feature][tag] = self.weights[feature][tag]/(iter*len(document))
-            
+                self.weights[feature][tag] = self.weights[feature][tag] / \
+                    (iter*len(document))
+
         return self.weights
 
 
@@ -227,13 +224,8 @@ def get_features(word, prev_word, prev_tag, prev2_tag, prev2_word, next_word, ne
     features = set()
     add("isFirstCapital", isFirstCapital(word))
     add("isAlpha", isAlpha(word))
-<<<<<<< HEAD
-    
-    #convert to lower case for better performance
-=======
 
     # convert to lower case for better performance
->>>>>>> 114c18add1f3e41072e4d9c64201c87f7398c8bd
     word = word.lower()
     prev_word = prev_word.lower()
     prev2_word = prev2_word.lower()
@@ -256,12 +248,7 @@ def get_features(word, prev_word, prev_tag, prev2_tag, prev2_word, next_word, ne
 
 
 # RUNNING THE CODE
-<<<<<<< HEAD
-output, tag_counts = parse_feature_tag_pairs('./EN/', 'train')
-
-=======
 output, tag_counts = parse_feature_tag_pairs('./AL/', 'train')
->>>>>>> 114c18add1f3e41072e4d9c64201c87f7398c8bd
 test = perceptronTagger(tag_counts)
 
 # Number of iterations to run perceptron
